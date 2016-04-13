@@ -10,21 +10,26 @@ parser.add_option('-o', '--output-file',
                   dest="output_file")
 (opts, args) = parser.parse_args()
 
-if opts.input_file is None or opts.output_file is None:
-    print "Missing mandatory option\n"
-    parser.print_help()
-    exit(-1)
+if opts.input_file is None:
+	print 'Required argument missing: input-file'
+	sys.exit(0)
 
-in_f = opts.input_file
-out_f = opts.output_file
+infile = opts.input_file
 
-csvfile = open(in_f, 'rU')
+if opts.output_file is None:
+	outfile = infile.split('/')[-1].split('.')[0] + '.json'
+else:
+	outfile = opts.output_file
+
+csvfile = open(infile, 'rU')
+print 'Reading from %s...' %(infile)
 reader = csv.DictReader(csvfile)
 
 out = json.dumps( [ row for row in reader ] )
 # jsons = json.loads(out)
 
-jsonfile = open(out_f, 'w')
+jsonfile = open(outfile, 'w')
+print 'Writing json to %s...' %(outfile)
 
 jsonfile.write(out)
-print "Conversion successful"
+print "Conversion successful!"
